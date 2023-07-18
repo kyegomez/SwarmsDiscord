@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   swarmsdiscord:
-    image: ghcr.io/kav-k/swarmsdiscord:main-full
+    image: ghcr.io/kyegomez/swarmsdiscord:main-full
     container_name: swarmsdiscord
     volumes:
       #replace left side with the path to your .env if different, this uses the env in the folder the docker-compose.yml is in
