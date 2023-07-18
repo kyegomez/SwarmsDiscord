@@ -75,7 +75,7 @@ except Exception as e:
 BOT_NAME = EnvService.get_custom_bot_name()
 
 
-class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
+class SWARMSComCon(discord.Cog, name="SWARMSComCon"):
     def __init__(
         self,
         bot,
@@ -425,7 +425,7 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
     async def send_settings_text(self, ctx):
         """compose and return the settings menu to the interacting user"""
         embed = discord.Embed(
-            title="GPT3Bot Settings",
+            title="SWARMSBot Settings",
             description="The current settings of the model",
             color=0x00FF00,
         )
@@ -760,7 +760,7 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
         """Command handler. Generates a help message and sends it to the user"""
         await ctx.defer()
         embed = discord.Embed(
-            title="GPT3Bot Help", description="The current commands", color=0xC730C7
+            title="SWARMSBot Help", description="The current commands", color=0xC730C7
         )
         embed.add_field(
             name="/search",
@@ -858,7 +858,7 @@ class GPT3ComCon(discord.Cog, name="GPT3ComCon"):
         """Command handler. Responds with the current usage of the bot"""
         await ctx.defer()
         embed = discord.Embed(
-            title="GPT3Bot Usage", description="The current usage", color=0x00FF00
+            title="SWARMSBot Usage", description="The current usage", color=0x00FF00
         )
         # 1000 tokens costs 0.02 USD, so we can calculate the total tokens used from the price that we have stored
         embed.add_field(

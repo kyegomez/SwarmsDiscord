@@ -12,7 +12,7 @@ import pinecone
 from pycord.multicog import apply_multicog
 
 from swarmsdiscord.cogs.search_service_cog import SearchService
-from swarmsdiscord.cogs.text_service_cog import GPT3ComCon
+from swarmsdiscord.cogs.text_service_cog import SWARMSComCon
 from swarmsdiscord.cogs.image_service_cog import DrawDallEService
 from swarmsdiscord.cogs.prompt_optimizer_cog import ImgPromptOptimizer
 from swarmsdiscord.cogs.moderations_service_cog import ModerationsService
@@ -131,9 +131,9 @@ async def main():
     # Load the cog for the moderations service
     bot.add_cog(ModerationsService(bot, usage_service, model))
 
-    # Load the main GPT3 Bot service
+    # Load the main SWARMS Bot service
     bot.add_cog(
-        GPT3ComCon(
+        SWARMSComCon(
             bot,
             usage_service,
             model,
@@ -154,7 +154,7 @@ async def main():
             model,
             message_queue,
             deletion_queue,
-            bot.get_cog("GPT3ComCon"),
+            bot.get_cog("SWARMSComCon"),
         )
     )
 
@@ -165,7 +165,7 @@ async def main():
             model,
             message_queue,
             deletion_queue,
-            bot.get_cog("GPT3ComCon"),
+            bot.get_cog("SWARMSComCon"),
             bot.get_cog("DrawDallEService"),
         )
     )
@@ -188,7 +188,7 @@ async def main():
     ):
         bot.add_cog(
             SearchService(
-                bot, model, usage_service, deletion_queue, bot.get_cog("GPT3ComCon")
+                bot, model, usage_service, deletion_queue, bot.get_cog("SWARMSComCon")
             )
         )
         print("The Search service is enabled.")
@@ -208,7 +208,7 @@ async def main():
             model,
             message_queue,
             deletion_queue,
-            bot.get_cog("GPT3ComCon"),
+            bot.get_cog("SWARMSComCon"),
             bot.get_cog("DrawDallEService"),
             bot.get_cog("ImgPromptOptimizer"),
             bot.get_cog("ModerationsService"),
