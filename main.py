@@ -11,26 +11,26 @@ import discord
 import pinecone
 from pycord.multicog import apply_multicog
 
-from cogs.search_service_cog import SearchService
-from cogs.text_service_cog import GPT3ComCon
-from cogs.image_service_cog import DrawDallEService
-from cogs.prompt_optimizer_cog import ImgPromptOptimizer
-from cogs.moderations_service_cog import ModerationsService
-from cogs.commands import Commands
-from cogs.transcription_service_cog import TranscribeService
-from cogs.translation_service_cog import TranslationService
-from cogs.index_service_cog import IndexService
-from models.deepl_model import TranslationModel
-from services.health_service import HealthService
-from services.pickle_service import Pickler
+from swarmsdiscord.cogs.search_service_cog import SearchService
+from swarmsdiscord.cogs.text_service_cog import GPT3ComCon
+from swarmsdiscord.cogs.image_service_cog import DrawDallEService
+from swarmsdiscord.cogs.prompt_optimizer_cog import ImgPromptOptimizer
+from swarmsdiscord.cogs.moderations_service_cog import ModerationsService
+from swarmsdiscord.cogs.commands import Commands
+from swarmsdiscord.cogs.transcription_service_cog import TranscribeService
+from swarmsdiscord.cogs.translation_service_cog import TranslationService
+from swarmsdiscord.cogs.index_service_cog import IndexService
+from swarmsdiscord.models.deepl_model import TranslationModel
+from swarmsdiscord.services.health_service import HealthService
+from swarmsdiscord.services.pickle_service import Pickler
 
-from services.pinecone_service import PineconeService
-from services.deletion_service import Deletion
-from services.message_queue_service import Message
-from services.usage_service import UsageService
-from services.environment_service import EnvService
+from swarmsdiscord.services.pinecone_service import PineconeService
+from swarmsdiscord.services.deletion_service import Deletion
+from swarmsdiscord.services.message_queue_service import Message
+from swarmsdiscord.services.usage_service import UsageService
+from swarmsdiscord.services.environment_service import EnvService
 
-from models.openai_model import Model
+from swarmsdiscord.models.openai_model import Model
 
 
 __version__ = "11.7.3"
@@ -101,7 +101,7 @@ model = Model(usage_service)
 
 
 #
-# An encapsulating wrapper for the discord.py client. This uses the old re-write without cogs, but it gets the job done!
+# An swarmsdiscord.encapsulating wrapper for the discord.py client. This uses the old re-write without cogs, but it gets the job done!
 #
 
 
