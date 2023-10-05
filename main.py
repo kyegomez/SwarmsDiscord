@@ -1,37 +1,31 @@
-import os
 import asyncio
+import os
 import signal
 import sys
-import threading
 import traceback
 from pathlib import Path
 from platform import system
 
 import discord
-import pinecone
 from pycord.multicog import apply_multicog
 
+from swarmsdiscord.cogs.commands import Commands
+from swarmsdiscord.cogs.image_service_cog import DrawDallEService
+from swarmsdiscord.cogs.index_service_cog import IndexService
+from swarmsdiscord.cogs.moderations_service_cog import ModerationsService
+from swarmsdiscord.cogs.prompt_optimizer_cog import ImgPromptOptimizer
 from swarmsdiscord.cogs.search_service_cog import SearchService
 from swarmsdiscord.cogs.text_service_cog import SWARMSComCon
-from swarmsdiscord.cogs.image_service_cog import DrawDallEService
-from swarmsdiscord.cogs.prompt_optimizer_cog import ImgPromptOptimizer
-from swarmsdiscord.cogs.moderations_service_cog import ModerationsService
-from swarmsdiscord.cogs.commands import Commands
 from swarmsdiscord.cogs.transcription_service_cog import TranscribeService
 from swarmsdiscord.cogs.translation_service_cog import TranslationService
-from swarmsdiscord.cogs.index_service_cog import IndexService
 from swarmsdiscord.models.deepl_model import TranslationModel
-from swarmsdiscord.services.health_service import HealthService
-from swarmsdiscord.services.pickle_service import Pickler
-
-from swarmsdiscord.services.pinecone_service import PineconeService
-from swarmsdiscord.services.deletion_service import Deletion
-from swarmsdiscord.services.message_queue_service import Message
-from swarmsdiscord.services.usage_service import UsageService
-from swarmsdiscord.services.environment_service import EnvService
-
 from swarmsdiscord.models.openai_model import Model
-
+from swarmsdiscord.services.deletion_service import Deletion
+from swarmsdiscord.services.environment_service import EnvService
+from swarmsdiscord.services.health_service import HealthService
+from swarmsdiscord.services.message_queue_service import Message
+from swarmsdiscord.services.pickle_service import Pickler
+from swarmsdiscord.services.usage_service import UsageService
 
 __version__ = "11.7.3"
 
@@ -48,30 +42,9 @@ else:
 # The pinecone service is used to store and retrieve conversation embeddings.
 #
 
-try:
-    PINECONE_TOKEN = os.getenv("PINECONE_TOKEN")
-except Exception:
-    PINECONE_TOKEN = None
-
-pinecone_service = None
-if PINECONE_TOKEN:
-    pinecone.init(api_key=PINECONE_TOKEN, environment=EnvService.get_pinecone_region())
-    PINECONE_INDEX = "conversation-embeddings"
-    if PINECONE_INDEX not in pinecone.list_indexes():
-        print("Creating pinecone index. Please wait...")
-        pinecone.create_index(
-            PINECONE_INDEX,
-            dimension=1536,
-            metric="dotproduct",
-            pod_type="s1",
-        )
-
-    pinecone_service = PineconeService(pinecone.Index(PINECONE_INDEX))
-    print("Got the pinecone service")
 
 #
 # Message queueing for the debug service, defer debug messages to be sent later so we don't hit rate limits.
-#
 message_queue = asyncio.Queue()
 deletion_queue = asyncio.Queue()
 asyncio.ensure_future(Message.process_message_queue(message_queue, 1.5, 5))
@@ -89,9 +62,7 @@ pickle_queue = asyncio.Queue()
 asyncio.ensure_future(Pickler.process_pickle_queue(pickle_queue, 5, 1))
 
 
-#
 # Settings for the bot
-#
 activity = discord.Activity(
     type=discord.ActivityType.watching, name="for /help /gpt, and more!"
 )
@@ -99,10 +70,6 @@ bot = discord.Bot(intents=discord.Intents.all(), command_prefix="!", activity=ac
 usage_service = UsageService(Path(os.environ.get("DATA_DIR", os.getcwd())))
 model = Model(usage_service)
 
-
-#
-# An swarmsdiscord.encapsulating wrapper for the discord.py client. This uses the old re-write without cogs, but it gets the job done!
-#
 
 
 @bot.event  # Using self gives u
@@ -142,7 +109,6 @@ async def main():
             debug_guild,
             debug_channel,
             data_path,
-            pinecone_service=pinecone_service,
             pickle_queue=pickle_queue,
         )
     )
@@ -229,7 +195,7 @@ def check_process_file(pid_file: Path) -> bool:
     if not pid_file.exists():
         return False
     if system() == "Linux":
-        with pid_file.open("r") as pfp:
+        with pid_file.open("r"):
             try:
                 proc_pid_path = Path("/proc") / "{int(pfp.read().strip())}"
                 print("Checking if PID proc path {proc_pid_path} exists")
