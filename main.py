@@ -38,12 +38,7 @@ if sys.platform == "win32":
 else:
     separator = "/"
 
-#
-# The pinecone service is used to store and retrieve conversation embeddings.
-#
 
-
-#
 # Message queueing for the debug service, defer debug messages to be sent later so we don't hit rate limits.
 message_queue = asyncio.Queue()
 deletion_queue = asyncio.Queue()

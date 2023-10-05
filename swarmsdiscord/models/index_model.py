@@ -1,28 +1,46 @@
+import asyncio
 import functools
 import os
 import random
 import tempfile
 import traceback
-import asyncio
 from collections import defaultdict
+from datetime import date
+from functools import partial
+from pathlib import Path
+from typing import List, Optional
 
+import aiofiles
 import aiohttp
 import discord
-import aiofiles
 import openai
 import tiktoken
-from functools import partial
-from typing import List, Optional
-from pathlib import Path
-from datetime import date
-
-from discord import InteractionResponse, Interaction
+from discord import Interaction, InteractionResponse
 from discord.ext import pages
 from langchain import OpenAI
 from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAIChat
 from langchain.memory import ConversationBufferMemory
+from llama_index import (
+    BeautifulSoupWebReader,
+    GithubRepositoryReader,
+    GoogleDocsReader,
+    GPTTreeIndex,
+    GPTVectorStoreIndex,
+    LLMPredictor,
+    MockEmbedding,
+    MockLLMPredictor,
+    OpenAIEmbedding,
+    QuestionAnswerPrompt,
+    ResponseSynthesizer,
+    ServiceContext,
+    SimpleDirectoryReader,
+    StorageContext,
+    download_loader,
+    load_index_from_storage,
+)
 from llama_index.callbacks import CallbackManager, TokenCountingHandler
+from llama_index.composability import ComposableGraph
 from llama_index.data_structs.data_structs import Node
 from llama_index.data_structs.node import DocumentRelationship
 from llama_index.indices.query.query_transform import StepDecomposeQueryTransform
@@ -31,43 +49,20 @@ from llama_index.langchain_helpers.agents import (
     LlamaToolkit,
     create_llama_chat_agent,
 )
+from llama_index.langchain_helpers.text_splitter import TokenTextSplitter
 from llama_index.optimization import SentenceEmbeddingOptimizer
 from llama_index.prompts.chat_prompts import CHAT_REFINE_PROMPT
-
+from llama_index.query_engine import MultiStepQueryEngine, RetrieverQueryEngine
 from llama_index.readers import YoutubeTranscriptReader
 from llama_index.readers.schema.base import Document
-from llama_index.langchain_helpers.text_splitter import TokenTextSplitter
-
-from llama_index.retrievers import VectorIndexRetriever, TreeSelectLeafRetriever
-from llama_index.query_engine import RetrieverQueryEngine, MultiStepQueryEngine
-
-from llama_index import (
-    GPTVectorStoreIndex,
-    SimpleDirectoryReader,
-    QuestionAnswerPrompt,
-    BeautifulSoupWebReader,
-    GPTTreeIndex,
-    GoogleDocsReader,
-    MockLLMPredictor,
-    OpenAIEmbedding,
-    GithubRepositoryReader,
-    MockEmbedding,
-    download_loader,
-    LLMPredictor,
-    ServiceContext,
-    StorageContext,
-    ResponseSynthesizer,
-    load_index_from_storage,
-)
 from llama_index.readers.web import DEFAULT_WEBSITE_EXTRACTOR
-
-from llama_index.composability import ComposableGraph
+from llama_index.retrievers import TreeSelectLeafRetriever, VectorIndexRetriever
 from llama_index.schema import BaseDocument
+from services.environment_service import EnvService
 
+from models.check_model import UrlCheck
 from models.embed_statics_model import EmbedStatics
 from models.openai_model import Models
-from models.check_model import UrlCheck
-from services.environment_service import EnvService
 
 SHORT_TO_LONG_CACHE = {}
 MAX_DEEP_COMPOSE_PRICE = EnvService.get_max_deep_compose_price()

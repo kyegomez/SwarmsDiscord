@@ -1,41 +1,40 @@
 import asyncio
 import os
-
 import tempfile
 import traceback
-from datetime import datetime, date
+from datetime import date, datetime
 from functools import partial
 from pathlib import Path
 
-import discord
 import aiohttp
+import discord
 import openai
 import tiktoken
+from langchain import OpenAI
 from langchain.chat_models import ChatOpenAI
 from llama_index import (
-    QuestionAnswerPrompt,
-    GPTVectorStoreIndex,
     BeautifulSoupWebReader,
     Document,
+    GPTVectorStoreIndex,
     LLMPredictor,
-    OpenAIEmbedding,
-    SimpleDirectoryReader,
     MockEmbedding,
-    ServiceContext,
+    OpenAIEmbedding,
+    QuestionAnswerPrompt,
     ResponseSynthesizer,
+    ServiceContext,
+    SimpleDirectoryReader,
 )
 from llama_index.callbacks import CallbackManager, TokenCountingHandler
 from llama_index.composability import QASummaryQueryEngineBuilder
-from llama_index.retrievers import VectorIndexRetriever
-from llama_index.query_engine import RetrieverQueryEngine, MultiStepQueryEngine
 from llama_index.indices.query.query_transform import StepDecomposeQueryTransform
 from llama_index.optimization import SentenceEmbeddingOptimizer
 from llama_index.prompts.chat_prompts import CHAT_REFINE_PROMPT
+from llama_index.query_engine import MultiStepQueryEngine, RetrieverQueryEngine
 from llama_index.readers.web import DEFAULT_WEBSITE_EXTRACTOR
-from langchain import OpenAI
+from llama_index.retrievers import VectorIndexRetriever
+from services.environment_service import EnvService
 
 from models.openai_model import Models
-from services.environment_service import EnvService
 
 MAX_SEARCH_PRICE = EnvService.get_max_search_price()
 

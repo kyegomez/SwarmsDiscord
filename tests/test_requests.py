@@ -38,13 +38,3 @@ async def test_send_req_gpt4():
     prompt = "how many hours are in a day?"
     res = await model.send_request(prompt, None, is_chatgpt_request=True, model="gpt-4")
     assert "24" in res["choices"][0]["message"]["content"]
-
-
-# Edit request -> currently broken due to endpoint
-# @pytest.mark.asyncio
-# async def test_send_edit_req():
-#     usage_service = UsageService(Path("../tests"))
-#     model = Model(usage_service)
-#     text = 'how many hours are in a day?'
-#     res = await model.send_edit_request(text)
-#     assert '24' in res['choices'][0]['text']
